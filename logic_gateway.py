@@ -1,11 +1,11 @@
-import streamlit as st  # Yeh line add karna zaroori hai
+import streamlit as st  # <--- YEH LINE SABSE UPAR HONI CHAHIYE
 import datetime
 
 def validate_access(key):
     return key == "1234"
 
 def log_access_attempt(dept, status):
-    # 'st' ko use karne ke liye import hona zaroori hai
+    # 'st' ko pehchanne ke liye upar wala import zaroori hai
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     log_entry = f"[{timestamp}] DEPT: {dept} | STATUS: {status}"
     
