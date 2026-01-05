@@ -1,38 +1,31 @@
 import streamlit as st
+import time
 from login_page import show_login
-from logic_gateway import secure_data_wipe, log_audit
+from logic_gateway import military_grade_wipe, log_audit, get_system_ip
 from rules_config import get_system_rules
 
-if 'auth' not in st.session_state:
-    st.session_state.auth = False
-if 'mfa_verified' not in st.session_state:
-    st.session_state.mfa_verified = False
+if 'auth' not in st.session_state: st.session_state.auth = False
+if 'jit_expiry' not in st.session_state: st.session_state.jit_expiry = None
 
 rules = get_system_rules()
+current_ip = get_system_ip()
+ALLOWED_IPS = ["127.0.0.1", "192.168"] # IP Whitelisting
 
 if not st.session_state.auth:
     show_login(rules['Version'])
 else:
-    # Multi-Factor Authentication Layer
-    if not st.session_state.mfa_verified:
-        st.warning("🛡️ SECOND LAYER AUTHENTICATION REQUIRED")
-        otp = st.text_input("Enter Hardware Token / OTP", type="password")
-        if st.button("VERIFY IDENTITY"):
-            if otp == "0000": # Agency Demo Token
-                st.session_state.mfa_verified = True
-                log_audit("System", "MFA Verification", "SUCCESS")
-                st.rerun()
-            else:
-                log_audit("Unknown", "MFA Failure", "CRITICAL ALERT")
-                st.error("Invalid Token")
-    else:
-        # Main Software Interface
-        st.sidebar.markdown(f"### 🛰️ GHOST PROTOCOL v{rules['Version']}")
-        
-        # Intrusion Detection System (Audit View)
-        if st.sidebar.checkbox("Show Intrusion Logs"):
-             st.code("\n".join(st.session_state.get('system_logs', [])), language="bash")
+    # JIT Access Monitor
+    if st.session_state.jit_expiry and time.time() > st.session_state.jit_expiry:
+        military_grade_wipe()
+        st.error("JIT Access Expired. Memory Sanitized.")
+        st.stop()
 
-        if st.sidebar.button("EXIT & WIPE SYSTEM"):
-            secure_data_wipe()
-            st.rerun()
+    # Network Security
+    if not any(current_ip.startswith(p) for p in ALLOWED_IPS):
+        st.error(f"Unauthorized Network: {current_ip}"); st.stop()
+
+    st.sidebar.markdown(f"### 🛰️ GHOST PROTOCOL v{rules['Version']}")
+    if st.sidebar.button("MILITARY WIPE & EXIT"):
+        military_grade_wipe()
+        st.rerun()
+    st.write("System Authorized. Monitoring Active.")

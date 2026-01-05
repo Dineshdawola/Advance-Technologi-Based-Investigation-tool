@@ -1,27 +1,24 @@
 import streamlit as st
-from logic_gateway import secure_data_wipe, get_file_hash, log_audit
+from logic_gateway import military_grade_wipe, get_file_hash, log_audit, redact_pii_data
+import time
 
 def show_database():
-    st.title("📂 Forensic Investigation Lab")
+    st.title("📂 Forensic WORM Lab")
     
-    # Role-Based Access Control (RBAC)
-    role = st.sidebar.selectbox("Access Level", ["Lead Investigator", "Field Agent"])
-    
-    uploaded_file = st.file_uploader("Upload Evidence (CDR/XLSX)", type=['csv', 'xlsx'])
+    if st.sidebar.button("Enable 30-Min JIT Access"):
+        st.session_state.jit_expiry = time.time() + 1800
+        st.success("JIT Access Granted.")
 
+    uploaded_file = st.file_uploader("Upload Evidence", type=['csv', 'xlsx'])
     if uploaded_file is not None:
-        # Digital Fingerprinting logic
-        file_bytes = uploaded_file.getvalue()
-        f_hash = get_file_hash(file_bytes)
+        file_hash = get_file_hash(uploaded_file.getvalue())
+        st.info(f"🛡️ WORM LOCK HASH: {file_hash}")
+        log_audit("Investigator", f"Uploaded {uploaded_file.name}", "SUCCESS")
         
-        st.info(f"🛡️ EVIDENCE HASH (SHA-256): {f_hash}")
-        log_audit(role, f"Uploaded: {uploaded_file.name}", "HASH VERIFIED")
+        # PII Redacted Preview
+        st.subheader("Sanitized Data Preview")
+        st.code(redact_pii_data("Sensitive Entry: 123456789012"))
 
-        if st.button("FINISH & ERASE DATA"):
-            if role == "Lead Investigator":
-                secure_data_wipe()
-                st.success("Chain of Custody Maintained. Memory Wiped.")
-                st.rerun()
-            else:
-                st.error("SECURITY ALERT: Unauthorized wipe attempt logged.")
-                log_audit(role, "Wipe Attempt", "DENIED")
+        if st.button("DoD SECURE SHRED"):
+            military_grade_wipe()
+            st.rerun()
