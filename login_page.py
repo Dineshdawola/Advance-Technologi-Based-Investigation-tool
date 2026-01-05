@@ -2,7 +2,7 @@ import streamlit as st
 from logic_gateway import validate_access, log_access_attempt
 
 def show_login(version):
-    # Animated Glow Title aur Cyber Button Style
+    # CSS aur Voice Script ka integration
     st.markdown(f"""
         <style>
         .glow-text {{
@@ -11,7 +11,7 @@ def show_login(version):
             text-shadow: 0 0 10px #39FF14, 0 0 20px #39FF14, 0 0 30px #39FF14;
             font-family: 'Courier New', Courier, monospace;
         }}
-        /* Naya Neon Blue Button Style */
+        /* Cyber Neon Blue Button */
         div.stButton > button:first-child {{
             background-color: #000000;
             color: #00f3ff;
@@ -20,14 +20,18 @@ def show_login(version):
             box-shadow: 0 0 10px #00f3ff;
             width: 100%;
             font-weight: bold;
-            transition: 0.3s;
-        }}
-        div.stButton > button:first-child:hover {{
-            background-color: #00f3ff;
-            color: #000;
-            box-shadow: 0 0 20px #00f3ff;
         }}
         </style>
+        
+        <script>
+        function welcomeVoice() {{
+            // Browser ki voice API
+            const msg = new SpeechSynthesisUtterance("Access Granted. Welcome Admin.");
+            msg.rate = 0.9; 
+            window.speechSynthesis.speak(msg);
+        }}
+        </script>
+        
         <h1 class='glow-text'>INVESTIGATION TOOL v{version}</h1>
     """, unsafe_allow_html=True)
     
@@ -35,17 +39,15 @@ def show_login(version):
     
     _, col, _ = st.columns([1,2,1])
     with col:
-        # Ab yahan sirf 'Admin Only' option dikhega
-        dept = st.selectbox("SELECT DEPARTMENT", ["Admin Only"])
+        # Department Selection - 'Admin Only' update
+        dept = st.selectbox("SELECT DEPARTMENT", ["Admin Only"]) 
         
-        # V-KEY Input
         pwd = st.text_input("V-KEY", type="password", placeholder="Enter Security Key")
         
-        st.markdown("<p style='color:#39FF14; font-size:12px; text-align:center;'>● System Status: SECURE | Encryption: AES-256</p>", unsafe_allow_html=True)
-        
-        # Button logic with new design
         if st.button("AUTHORIZE SYSTEM"):
             if validate_access(pwd):
+                # Voice play karne ke liye invisible HTML component
+                st.components.v1.html("<script>welcomeVoice();</script>", height=0)
                 log_access_attempt(dept, "SUCCESS")
                 st.session_state.auth = True
                 st.rerun()
