@@ -3,21 +3,21 @@ from logic_gateway import military_grade_wipe, get_file_hash, log_audit, redact_
 import time
 
 def show_database():
-    st.title("📂 Forensic WORM Lab")
+    st.title("📂 Forensic Evidence Lab")
     
-    if st.sidebar.button("Enable 30-Min JIT Access"):
+    # JIT Access Activation
+    if st.sidebar.button("Request 30-Min JIT Access"):
         st.session_state.jit_expiry = time.time() + 1800
-        st.success("JIT Access Granted.")
+        st.success("Access Granted for 30 Minutes.")
 
-    uploaded_file = st.file_uploader("Upload Evidence", type=['csv', 'xlsx'])
+    uploaded_file = st.file_uploader("Upload Data File", type=['csv', 'xlsx'])
     if uploaded_file is not None:
         file_hash = get_file_hash(uploaded_file.getvalue())
         st.info(f"🛡️ WORM LOCK HASH: {file_hash}")
-        log_audit("Investigator", f"Uploaded {uploaded_file.name}", "SUCCESS")
         
-        # PII Redacted Preview
-        st.subheader("Sanitized Data Preview")
-        st.code(redact_pii_data("Sensitive Entry: 123456789012"))
+        # PII Redaction Feature
+        st.subheader("Data Privacy (PII Masked)")
+        st.code(redact_pii_data("Investigation Lead: Rahul, ID: 123456789012"))
 
         if st.button("DoD SECURE SHRED"):
             military_grade_wipe()
