@@ -4,8 +4,9 @@ def show_logs():
     st.title("🖥️ System Access Logs")
     
     if 'system_logs' in st.session_state and st.session_state.system_logs:
-        for log in reversed(st.session_state.system_logs):
-            st.code(log, language="bash")
+        # Show logs in a terminal-style box
+        log_text = "\n".join(reversed(st.session_state.system_logs))
+        st.code(log_text, language="bash")
     else:
         st.info("No recent access attempts detected.")
     

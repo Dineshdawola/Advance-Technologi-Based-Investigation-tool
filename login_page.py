@@ -19,21 +19,17 @@ def show_login(version):
     
     _, col, _ = st.columns([1,2,1])
     with col:
-        # Department Choice (UX Improvement)
         dept = st.selectbox("SELECT DEPARTMENT", ["CDR Dept", "Cyber Cell", "Admin", "Forensic Lab"])
-        
-        # V-KEY Input
         pwd = st.text_input("V-KEY", type="password", placeholder="Enter Security Key")
         
-        # System Status Indicator (Visual Branding)
         st.markdown("<p style='color:#39FF14; font-size:12px; text-align:center;'>● System Status: SECURE | Encryption: AES-256</p>", unsafe_allow_html=True)
         
-        # Authorize Button with Logic
-        if st.button("AUTHORIZE SYSTEM") or (pwd and st.session_state.get('last_pwd') != pwd):
+        # Fixed logic: Only check on button click to avoid constant "Access Denied" alerts
+        if st.button("AUTHORIZE SYSTEM"):
             if validate_access(pwd):
-                log_access_attempt(dept, "SUCCESS") # Logging added
+                log_access_attempt(dept, "SUCCESS")
                 st.session_state.auth = True
                 st.rerun()
             elif pwd:
-                log_access_attempt(dept, "FAILED") # Logging added
+                log_access_attempt(dept, "FAILED")
                 st.error("ACCESS DENIED")
