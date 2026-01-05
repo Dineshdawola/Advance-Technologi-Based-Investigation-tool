@@ -1,8 +1,6 @@
 @echo off
-:: Drive switch aur absolute path ka istemal
-E:
-cd "E:\CDR Tool"
+:: Drive switch ki tension khatam, folder location se hi run hoga
+cd /d "%~dp0"
 echo Starting Cyber Cops Software...
-:: Streamlit command
 python -m streamlit run app.py
 pause

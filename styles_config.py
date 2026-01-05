@@ -3,26 +3,44 @@ import streamlit as st
 def apply_enterprise_styles():
     st.markdown("""
         <style>
-        /* India's Best Agency Dark Theme */
-        .stApp {
-            background: radial-gradient(circle at center, #011111 0%, #000000 100%) !important;
+        /* Anti-Screenshot Protection */
+        @media print { body { display: none; } }
+        body { 
+            -webkit-touch-callout: none; -webkit-user-select: none; 
+            -khtml-user-select: none; -moz-user-select: none; 
+            -ms-user-select: none; user-select: none;
         }
 
-        /* Sidebar Always Fixed & Professional Glow */
+        /* Sidebar Always Fixed & No Hide Button */
+        [data-testid="stSidebarNav"] { pointer-events: none; }
+        button[kind="headerNoPadding"] { display: none !important; }
         section[data-testid="stSidebar"] {
             position: fixed !important;
-            height: 100vh !important;
-            width: 300px !important;
             background: #050505 !important;
             border-right: 2px solid #00f3ff;
-            z-index: 1000;
+            width: 320px !important;
+            visibility: visible !important;
         }
 
-        section[data-testid="stSidebar"]:hover {
-            border-right: 2px solid #39FF14;
-            box-shadow: 5px 0 25px rgba(57, 255, 20, 0.2);
+        /* Title Positioning */
+        .main-header {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            text-align: center;
+            z-index: 100;
         }
-
-        header, footer, #MainMenu {visibility: hidden;}
         </style>
+        
+        <script>
+        // Detection for Screenshots
+        document.addEventListener('keyup', (e) => {
+            if (e.key == 'PrintScreen' || (e.ctrlKey && e.key == 'p')) {
+                navigator.clipboard.writeText('ACCESS BLOCKED');
+                alert('SECURITY VIOLATION: Unauthorized screen capture attempt.');
+            }
+        });
+        </script>
     """, unsafe_allow_html=True)

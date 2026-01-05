@@ -1,23 +1,30 @@
 import streamlit as st
-import datetime
 import gc
+import datetime
+import hashlib
+
+def get_file_hash(file_bytes):
+    """Digital Fingerprinting (SHA-256) for Data Integrity"""
+    return hashlib.sha256(file_bytes).hexdigest()
+
+def apply_data_masking(text):
+    """Data Masking for Privacy"""
+    if len(text) <= 4: return "****"
+    return text[:2] + "*" * (len(text)-4) + text[-2:]
 
 def validate_access(key):
-    # Agency Master Key
+    # Agency Master Key (Future: MFA integration)
     return key == "1234"
 
-def secure_data_wipe():
-    """System memory (RAM) se saare temporary records ko turant erase karne ke liye"""
-    for key in list(st.session_state.keys()):
-        if key != 'auth': 
-            del st.session_state[key]
-    gc.collect() # Garbage collector memory flush karega
+def secure_data_wipe(file_obj=None):
+    st.session_state.clear()
+    st.session_state.auth = False
+    gc.collect()
 
-def log_access_attempt(dept, status):
-    # Logs hamesha temporary rahenge, disk par save nahi honge
-    timestamp = datetime.datetime.now().strftime("%H:%M:%S")
-    entry = f"[{timestamp}] {dept} | {status} | TLS 1.3"
-    
+def log_access_attempt(dept, user, action, status):
+    """Detailed Audit Logs for Traceability"""
+    ts = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     if 'system_logs' not in st.session_state:
         st.session_state.system_logs = []
-    st.session_state.system_logs.append(entry)
+    log_entry = f"[{ts}] USER: {user} | ACTION: {action} | STATUS: {status}"
+    st.session_state.system_logs.append(log_entry)
