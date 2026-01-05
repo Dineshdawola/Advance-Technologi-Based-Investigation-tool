@@ -1,32 +1,18 @@
+import os
 import streamlit as st
-import time
-from login_page import show_login
-from logic_gateway import military_grade_wipe, log_audit, get_system_ip
-from rules_config import get_system_rules
 
-# Session state initialization
-if 'auth' not in st.session_state: st.session_state.auth = False
-if 'jit_expiry' not in st.session_state: st.session_state.jit_expiry = None
-
-rules = get_system_rules()
-
-if not st.session_state.auth:
-    show_login(rules['Version'])
-else:
-    # JIT Access Monitor (Abhi active hai par IP block nahi karega)
-    if st.session_state.jit_expiry and time.time() > st.session_state.jit_expiry:
-        military_grade_wipe()
-        st.error("⌛ JIT Access Expired. Session Sanitized.")
-        st.stop()
-
-    st.sidebar.markdown(f"### 🛰️ GHOST PROTOCOL v{rules['Version']}")
+def initialize_webview_config():
+    """Update WebView2 Path for Enterprise Tool"""
+    # Aapke folder ka path define karna
+    base_path = "E:/CDR Tool/_Investigationtools.exe.WebView2"
     
-    # Audit Logs (Previous logic kept)
-    if st.sidebar.checkbox("View Audit Logs"):
-        st.code("\n".join(st.session_state.get('system_logs', [])))
+    if os.path.exists(base_path):
+        # Software ko version 1.0.0.10 ke protocols se link karna
+        st.session_state['webview_path'] = base_path
+        st.session_state['filter_version'] = "10.34.0.55"
+        return f"✅ WebView2 Engine: Isolated & Secure (v{st.session_state['filter_version']})"
+    else:
+        return "⚠️ Warning: WebView2 Folder Missing. Default engine in use."
 
-    if st.sidebar.button("MILITARY WIPE & EXIT"):
-        military_grade_wipe()
-        st.rerun()
-
-    st.write("### Investigation Dashboard (Network Shield: On Hold)")
+# App startup mein ise call karein
+# cert_shield aur protocol_shield ke saath ise bhi sidebar mein dikhayein
