@@ -2,7 +2,7 @@ import streamlit as st
 from logic_gateway import validate_access, log_access_attempt
 
 def show_login(version):
-    # Glow effect wala title
+    # Animated Glow Title
     st.markdown(f"""
         <style>
         .glow-text {{
@@ -19,13 +19,16 @@ def show_login(version):
     
     _, col, _ = st.columns([1,2,1])
     with col:
-        dept = st.selectbox("SELECT DEPARTMENT", ["CDR Dept", "Cyber Cell", "Admin", "Forensic Lab"])
+        # UPDATED: Ab yahan sirf 'Admin Only' option dikhega
+        dept = st.selectbox("SELECT DEPARTMENT", ["Admin Only"])
+        
+        # V-KEY Input
         pwd = st.text_input("V-KEY", type="password", placeholder="Enter Security Key")
         
-        # System Status display
+        # System Status Indicator
         st.markdown("<p style='color:#39FF14; font-size:12px; text-align:center;'>● System Status: SECURE | Encryption: AES-256</p>", unsafe_allow_html=True)
         
-        # Login Logic fix
+        # Authorize Button Logic
         if st.button("AUTHORIZE SYSTEM"):
             if validate_access(pwd):
                 log_access_attempt(dept, "SUCCESS")
