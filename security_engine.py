@@ -1,23 +1,27 @@
 import streamlit as st
 
-def apply_security_shield():
+def apply_enterprise_styles():
     st.markdown("""
-        <script>
-        document.addEventListener('contextmenu', e => e.preventDefault());
-        document.onkeydown = function(e) {
-            if(e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74))) return false;
-            if(e.ctrlKey && e.keyCode == 85) return false;
-        };
-        </script>
-    """, unsafe_allow_html=True)
+        <style>
+        /* Agency Dark Theme */
+        .stApp {
+            background: radial-gradient(circle at center, #011111 0%, #000000 100%);
+        }
+        
+        /* Always Show Sidebar on Main Page */
+        section[data-testid="stSidebar"] {
+            position: fixed !important;
+            visibility: visible !important;
+            background: #050505 !important;
+            border-right: 1px solid #00f3ff;
+            box-shadow: 5px 0 20px rgba(0, 243, 255, 0.1);
+        }
+        
+        /* Cursor move hone par sidebar highlight */
+        section[data-testid="stSidebar"]:hover {
+            border-right: 2px solid #39FF14;
+        }
 
-def monitor_screenshot_attempts():
-    st.markdown("""
-        <script>
-        document.addEventListener('keyup', (e) => {
-            if (e.key === 'PrintScreen' || (e.ctrlKey && e.key === 'p')) {
-                alert('⚠️ SECURITY ALERT: Screenshot Attempt Detected! Activity logged and sent to Cyber Cops Developer.');
-            }
-        });
-        </script>
+        header, footer {visibility: hidden;}
+        </style>
     """, unsafe_allow_html=True)
