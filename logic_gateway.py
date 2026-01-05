@@ -1,10 +1,11 @@
+import streamlit as st  # Yeh line add karna zaroori hai
 import datetime
 
 def validate_access(key):
     return key == "1234"
 
 def log_access_attempt(dept, status):
-    # Yeh logs ko session state mein temporary save karega
+    # 'st' ko use karne ke liye import hona zaroori hai
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     log_entry = f"[{timestamp}] DEPT: {dept} | STATUS: {status}"
     

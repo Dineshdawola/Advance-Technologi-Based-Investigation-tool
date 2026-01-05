@@ -1,6 +1,6 @@
 def get_system_rules():
     return {
-        "Version": "1.0.0.1.6",  # Version updated for Page 1 enhancements
+        "Version": "1.0.0.1.7",  # Version incremented
         "Identity": "Cyber Cops",
         "Security": "Maximum-Enterprise",
         "Status": "Locked"
